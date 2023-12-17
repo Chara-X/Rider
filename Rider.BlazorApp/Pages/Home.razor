@@ -1,0 +1,17 @@
+﻿<CascadingValue Value="_workspace" IsFixed="true">
+    <div class="rider">
+        <div class="explorer">
+            <WorkspaceExplorer ActiveDocumentChanged="@(x => _activeDocument = x)"/>
+        </div>
+        @if (_activeDocument != null)
+        {
+            <div class="editor">
+                <DocumentEditor Document="_activeDocument"/>
+            </div>
+        }
+        <div class="shell">
+            <Shell/>
+        </div>
+        <Dialog />
+    </div>
+</CascadingValue>

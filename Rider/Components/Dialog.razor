@@ -1,0 +1,17 @@
+@if (_childContent != null)
+{
+    <div class="dialog" @onclick="() => _childContent = null">
+        @if (_position != null)
+        {
+            <div style="position: fixed; top: @(_position.Value.ClientY)px; left: @(_position.Value.ClientX)px" @onclick:stopPropagation>
+                @_childContent
+            </div>
+        }
+        else
+        {
+            <div @onclick:stopPropagation>
+                @_childContent
+            </div>
+        }
+    </div>
+}

@@ -1,0 +1,7 @@
+﻿<div @ref="_actionsReference" class="actions">
+    @for (var i = 0; i < CodeActions.Length; i++)
+    {
+        var index = i;
+        <div class="action @(_index == i ? "action-selected" : string.Empty)" @onclick="@(async () => {_index = index; await InvokeAsync();})" @onmouseenter="() => _index = index">🔷&nbsp;@CodeActions[i].Name</div>
+    }
+</div>

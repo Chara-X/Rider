@@ -1,0 +1,19 @@
+.keyword { color: #569CD6; }
+.numeric-literal { color: #b5cea8; }
+.string-literal { color: #d69d85; }
+.type { color: #4ec9b0; }
+.method { color: #dcdcaa; }
+    .type:hover, .method:hover {
+        text-decoration: underline;
+        cursor: pointer;
+    }
+.error {
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: red;
+}
+.warning {
+    text-decoration-line: underline;
+    text-decoration-style: wavy;
+    text-decoration-color: yellow;
+}

@@ -1,0 +1,41 @@
+* {
+    font-size: 14px;
+    font-family: consolas;
+    color: white;
+    caret-color: white;
+}
+
+.editor {
+    height: 100%;
+    overflow: scroll;
+    display: grid;
+    grid-template-columns: max-content auto;
+}
+
+.rows { background-color: #1F1F1F; }
+
+.textarea { position: relative; }
+
+.overlay-container {
+    width: max-content;
+    pointer-events: none;
+    display: grid;
+    position: absolute;
+    top: 0;
+}
+
+.code {
+    min-height: 100%;
+    min-width: 100%;
+    background-color: #1F1F1F;
+    color: transparent;
+}
+
+    .code::selection { background-color: #005FB8; }
+
+.code-view {
+    margin-bottom: 0;
+    cursor: text;
+}
+
+    .code-view::after { content: "\00a0"; }

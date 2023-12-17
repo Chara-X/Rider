@@ -1,0 +1,9 @@
+﻿<div class="shell">
+    <div class="button-group">
+        <button @onclick="OnRunClick">🪲</button>
+        <button @onclick="@(() => _stringWriter.GetStringBuilder().Clear())">✂️</button>
+    </div>
+    <pre class="console">
+        @_stringWriter.ToString()
+    </pre>
+</div>

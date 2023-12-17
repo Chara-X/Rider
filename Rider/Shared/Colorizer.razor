@@ -1,0 +1,33 @@
+@inherits DocumentRender
+
+@Render(SyntaxTree)
+
+@code
+{
+    public override RenderFragment RenderToken(SyntaxToken token)
+    {
+        RenderFragment renderFragment;
+        // 性能问题：GetSymbol
+        if (token.IsKeyword())
+            renderFragment = @<span class="keyword">@token</span>;
+        else if (token.IsKind(SyntaxKind.NumericLiteralToken))
+            renderFragment = @<span class="numeric-literal">@token</span>;
+        else if (token.IsKind(SyntaxKind.StringLiteralToken))
+            renderFragment = @<span class="string-literal">@token</span>;
+        else if (token.IsKind(SyntaxKind.IdentifierToken) && token.Parent != null && token.Parent.IsKinds(SyntaxKind.ClassDeclaration, SyntaxKind.MethodDeclaration, SyntaxKind.ConstructorDeclaration, SyntaxKind.IdentifierName) && SemanticModel.GetSymbol(token.Parent!) is { Kind: SymbolKind.NamedType or SymbolKind.Method} symbol)
+        {
+            if (symbol.IsKinds(SymbolKind.NamedType))
+                renderFragment = @<span class="type" title="@SymbolDisplay.ToDisplayString(symbol, SymbolDisplayFormat.MinimallyQualifiedFormat)">@token</span>;
+            else if (symbol.IsKinds(SymbolKind.Method))
+                renderFragment = @<span class="method" title="@SymbolDisplay.ToDisplayString(symbol, SymbolDisplayFormat.MinimallyQualifiedFormat)">@token</span>;
+            else renderFragment = x => x.AddContent(token.SpanStart, token);
+        }
+        else renderFragment = x => x.AddContent(token.SpanStart, token);
+        renderFragment = Enumerable.Aggregate(SemanticModel.GetSyntaxDiagnostics(token.Span), renderFragment, (current, x) => x.Severity switch{
+            DiagnosticSeverity.Error => @<span class="error" title="@(x.Descriptor.Id)">@current</span>,
+            DiagnosticSeverity.Warning => @<span class="warning" title="@(x.Descriptor.Id)">@current</span>,
+            _ => current
+            });
+        return RenderTrivium(token.LeadingTrivia) + renderFragment + RenderTrivium(token.TrailingTrivia);
+    }
+}

@@ -1,0 +1,48 @@
+@inherits DocumentWriter
+<div class="editor">
+    <div class="rows">
+        <Rows Document="Document"/>
+    </div>
+    <div class="textarea">
+        <textarea @ref="_codeReference" class="code" value="@Text" rows="@RowsCount" cols="@ColumnsCount" @onkeydown="OnKeyDown" @onclick="OnClick" @onblur="@(() => Workspace.TryApplyChanges(Workspace.CurrentSolution.WithDocumentSyntaxRoot(Document.Id, SyntaxRoot)))" @onkeydown:preventDefault="true" />
+        <div class="overlay-container">
+            <pre class="code-view" @onmousedown="() => _isEditing = true">
+            <Colorizer Document="Document" />
+            </pre>
+            <Columns Document="Document"/>
+            <div @ref="_anchorReference" class="anchor"/>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    private RenderFragment RenderCodeActions() => @<CodeActor @ref="_codeActor" CodeActions="GetCodeActions().ToArray()"/>;
+
+    private RenderFragment RenderAutoCompletions(bool firstOpen)
+    {
+        if (firstOpen)
+            return @<CodeActor @ref="_codeActor" CodeActions="GetAutoCompletions().ToArray()"/>;
+        return @<CodeActor @ref="_codeActor" CodeActions="@(_codeActor.CodeActions.Where(x => { Capture capture = _identifierRegex.Match(Text[..Position]); return capture.Length > 0 && x.Name.StartsWith(capture.Value); }).ToArray())"/>;
+    }
+
+    private RenderFragment RenderRename(Func<string, Task> onConfirm) => @<Rename OnChanged="onConfirm"/>;
+}
+
+<style>
+    .overlay-container {
+        grid-template-rows: repeat(@RowsCount, 1fr);
+        grid-template-columns: repeat(@ColumnsCount, 1fr);
+    }
+
+    .code-view {
+        grid-row: 1/span @RowsCount;
+        grid-column: 1/span @ColumnsCount;
+        pointer-events: @(_isEditing ? "none" : "auto");
+    }
+
+    .anchor {
+        grid-row: @(RowNumber + 2);
+        grid-column: @(ColumnNumber + 1);
+    }
+</style>

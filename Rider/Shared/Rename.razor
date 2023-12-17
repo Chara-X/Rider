@@ -1,0 +1,2 @@
+﻿<input @ref="_inputReference" placeholder="name" @oninput="@(args => _name = args.ValueOrEmpty())" @onkeypress="OnKeyPress"/>
+<button @onclick="@(async ()=>await OnChanged.InvokeAsync(_name))">✔️</button>

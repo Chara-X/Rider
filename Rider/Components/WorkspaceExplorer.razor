@@ -1,0 +1,31 @@
+﻿<div class="explorer">
+    <div class="header">
+        <em>Explorer</em>
+    </div>
+    <div class="body">
+        @Render(_workDirectory)
+    </div>
+</div>
+
+@code {
+
+    private RenderFragment Render(ExplorerNode explorerNode) => explorerNode switch { ExplorerDirectory e => RenderDirectory(e), ExplorerFile e => RenderFile(e), _ => throw new ArgumentOutOfRangeException(nameof(explorerNode)) };
+
+    private RenderFragment RenderDirectory(ExplorerDirectory directory) =>
+        @<details class="directory" @oncontextmenu:preventDefault="true">
+            <summary @oncontextmenu="args => OnContextMenu(directory, args)">⚙️&nbsp;@directory.Name</summary>
+            <div class="indention">
+                @foreach (var x in directory.Children)
+                {
+                    @Render(x)
+                }
+            </div>
+        </details>;
+
+    private RenderFragment RenderFile(ExplorerFile file) => @<div class="file @(_currentFile == file ? "file-selected" : string.Empty)" @onclick="() => OnExplorerFileClick(file)" @oncontextmenu="args => OnContextMenu(file, args)" @oncontextmenu:preventDefault="true">🪬&nbsp;@file.Name</div>;
+
+    private RenderFragment RenderCodeActions(ExplorerNode explorerNode) => @<CodeActor CodeActions="GetCodeActions(explorerNode).ToArray()"/>;
+
+    private RenderFragment RenderRename(Func<string, Task> onChanged) => @<Rename OnChanged="onChanged"/>;
+
+}

@@ -1,0 +1,17 @@
+@inherits DocumentComponentBase
+@code
+{
+    public virtual RenderFragment Render(SyntaxTree tree) => RenderNode(tree.GetRoot());
+
+    public virtual RenderFragment RenderNodeOrToken(SyntaxNodeOrToken nodeOrToken) => nodeOrToken.IsNode ? RenderNode(nodeOrToken.AsNode()!) : RenderToken(nodeOrToken.AsToken());
+
+    public virtual RenderFragment RenderNode(SyntaxNode node) => RenderNodesOrTokens(node.ChildNodesAndTokens());
+
+    public virtual RenderFragment RenderToken(SyntaxToken token) => RenderTrivium(token.LeadingTrivia) + (x => x.AddContent(0, token)) + RenderTrivium(token.TrailingTrivia);
+
+    public virtual RenderFragment RenderTrivia(SyntaxTrivia trivia) => x => x.AddContent(0, trivia);
+
+    public virtual RenderFragment RenderNodesOrTokens(IEnumerable<SyntaxNodeOrToken> nodesOrTokens) => nodesOrTokens.Aggregate(new RenderFragment(_ => { }), (current, x) => current + RenderNodeOrToken(x));
+
+    public virtual RenderFragment RenderTrivium(IEnumerable<SyntaxTrivia> trivium) => trivium.Aggregate(new RenderFragment(_ => { }), (current, x) => current + RenderTrivia(x));
+}

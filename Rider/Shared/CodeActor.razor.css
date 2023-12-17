@@ -1,0 +1,24 @@
+* {
+    font-family: Consolas;
+    font-size: 13px;
+    color: white;
+}
+
+.actions {
+    max-height: 167px;
+    min-width: 200px;
+    background-color: #2C2C2C;
+    overflow: scroll;
+    position: fixed;
+}
+
+.action {
+    height: 30px;
+    width: 100%;
+    padding: 0 7px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.action-selected { background-color: #3D3D3D; }

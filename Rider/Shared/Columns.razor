@@ -1,0 +1,7 @@
+@inherits DocumentComponentBase
+@foreach (var x in SyntaxRoot.DescendantNodesAndSelf().Where(x => x.HasOpenAndCloseBraceToken()))
+{
+    var openBraceStartLine = SyntaxTree.GetLineSpan(x.ChildTokens().Single(y => y.IsKind(SyntaxKind.OpenBraceToken)).Span).StartLinePosition;
+    var closeBraceStartLine = SyntaxTree.GetLineSpan(x.ChildTokens().Single(y => y.IsKind(SyntaxKind.CloseBraceToken)).Span).StartLinePosition;
+    <div class="column" style="grid-row: @(openBraceStartLine.Line + 2)/span @(closeBraceStartLine.Line - openBraceStartLine.Line - 1); grid-column: @(openBraceStartLine.Character + 1)/span 1;"/>
+}
